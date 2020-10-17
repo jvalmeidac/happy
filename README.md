@@ -2,7 +2,8 @@
 Projeto criado durante a NLW#03. Desenvolvido um sistema para listagem de orfanatos cadastrados na cidade de Araguaína - TO!
 
 #Tecnologias utilizadas:
-<a href="https://github.com/jvalmeidac/happy/tree/main/happy-backend">Backend:</a>
+
+<p><a href="https://github.com/jvalmeidac/happy/tree/main/happy-backend">Backend:</a></p>
 <ul>
   <li>NodeJS</li>
   <li>Typescript</li>
