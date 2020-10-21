@@ -43,10 +43,16 @@ export default function CreateOrphanage() {
     formData.append("longitude", String(longitude));
     formData.append("instructions", instructions);
     formData.append("opening_hours", opening_hours);
-    formData.append("open_on_weekends)", String(open_on_weekends));
+    formData.append("open_on_weekends)", open_on_weekends.toString());
     images.forEach((image) => {
       formData.append("images", image);
     });
+
+    if (latitude === 0 || longitude === 0) {
+      alert("Por favor, selecione um lugar em Araguaína");
+      return;
+    }
+    console.log(formData);
 
     await api.post("orphanages", formData);
 
@@ -69,7 +75,6 @@ export default function CreateOrphanage() {
 
     setPreviewImages(selectedImagesPreview);
   }
-  console.log(open_on_weekends);
 
   return (
     <div id="page-create-orphanage">
@@ -172,8 +177,8 @@ export default function CreateOrphanage() {
                 </button>
                 <button
                   type="button"
-                  className={!open_on_weekends ? "active" : ""}
-                  onClick={(e) => setOpenOnWeekends(false)}
+                  className={!open_on_weekends ? "active-red" : ""}
+                  onClick={() => setOpenOnWeekends(false)}
                 >
                   Não
                 </button>

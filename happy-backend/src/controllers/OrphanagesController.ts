@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import * as Yup from "yup";
+import { Any, getRepository } from "typeorm";
+import { validate } from "class-validator";
 
 import Orphanage from "../models/Orphanage";
 import orphanageView from "../views/orphanage_views";
@@ -44,39 +44,22 @@ export default {
       return { path: image.filename };
     });
 
-    const data = {
-      name,
-      latitude,
-      longitude,
-      about,
-      instructions,
-      opening_hours,
-      open_on_weekends: open_on_weekends == "true",
-      images,
-    };
+    let orphanage = new Orphanage();
 
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      latitude: Yup.number().required(),
-      longitude: Yup.number().required(),
-      about: Yup.string().required().max(300),
-      instructions: Yup.string().required(),
-      opening_hours: Yup.string().required(),
-      open_on_weekends: Yup.boolean().required(),
-      images: Yup.array(
-        Yup.object().shape({
-          path: Yup.string().required(),
-        })
-      )
-        .required()
-        .min(1),
-    });
+    orphanage.name = name;
+    orphanage.about = about;
+    orphanage.instructions = instructions;
+    orphanage.latitude = latitude;
+    orphanage.longitude = longitude;
+    orphanage.opening_hours = opening_hours;
+    orphanage.open_on_weekends = open_on_weekends === "true";
+    orphanage.images = images;
 
-    await schema.validate(data, {
-      abortEarly: false,
-    });
-
-    const orphanage = orphanagesRepository.create(data);
+    const errors = await validate(orphanage);
+    if (errors.length > 0) {
+      res.status(400).json({ errors: errors });
+      return;
+    }
 
     await orphanagesRepository.save(orphanage);
 
